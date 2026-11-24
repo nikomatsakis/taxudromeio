@@ -1,0 +1,50 @@
+name: Checks
+
+on: [push, pull_request, workflow_dispatch]
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    name: Check (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust
+        run: |
+          rustup toolchain install stable --profile minimal --component rustfmt --component clippy
+          rustup default stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Cache Book tools
+        uses: actions/cache@v4
+        with:
+          path: target/book-tools
+          key: book-tools-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Cargo.lock', 'scripts/setup-book-tools.sh') }}
+      - name: Set up pinned Book tools
+        run: |
+          scripts/setup-book-tools.sh
+          echo "$PWD/target/book-tools/bin" >> "$GITHUB_PATH"
+      - name: Check Rust
+        run: |
+          cargo fmt --check
+          cargo clippy --locked --all-targets -- -D warnings
+          cargo test --locked --all-targets
+      - name: Check Book integration
+        run: |
+          anchorbook check --config anchorbook.toml
+          mdbook build
+          cargo test --locked --test book -- --ignored
+      - name: Verify anchor criteria
+        run: anchorbook verify --config anchorbook.toml --format json > target/anchorbook-progress.json
+      - name: Retain verification report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: anchorbook-progress-${{ matrix.os }}
+          path: target/anchorbook-progress.json
+          if-no-files-found: ignore

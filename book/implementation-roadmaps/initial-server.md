@@ -27,7 +27,8 @@ This is a prototype assignment from the user's initial request.
 - [x] Implement typed policy, folder confinement, UID checks, reads, moves, copies, flags and draft appends.
 - [x] Run deterministic unit, CLI, MCP and IMAP boundary tests.
 - [x] Validate and render the Book using the pinned Anchor Book engine.
-- [ ] Record a real-provider and native Keychain acceptance run.
+- [ ] Implement and run the isolated, executable native Keychain/authentication fixture.
+- [ ] Record a real-provider and native Keychain operator acceptance run.
 
 ### Completion criteria
 
@@ -45,7 +46,7 @@ The supported operations and per-configuration boundaries pass deterministic tes
 
 Login and credentials are stored only in Keychain; configuration-save failure restores previous state, and real macOS authentication is observed.
 
-- **Anchor coverage:** `A-auth-keychain` · `no-file-secrets`, `save-failure`, `native-login` — Full
+- **Anchor coverage:** `A-auth-keychain` · `no-file-secrets`, `discovery-redaction`, `save-failure`, `native-login` — Full
 - **Evidence:** Partial on 2026-11-17: TOML rejection, nonsecret CLI/discovery output, and fake-store rollback tests passed. Native Security Framework integration compiled on macOS. The native-login review has not run; ordinary tests do not access real Keychain or accounts.
 
 #### Development checks {#initial-server-1-development-checks}
@@ -77,7 +78,11 @@ upgrade requires reassessment.
 
 ### Completion record
 
-Pending native Keychain and real-provider acceptance in addition to local checks.
+Pending executable native Keychain verification and real-provider operator
+acceptance in addition to local checks. Milestone 10 migrates `native-login` from
+review to test without claiming that either acceptance has run. It separates
+`discovery-redaction` from `no-file-secrets` and adds the missing source links;
+this preserves the credential-protection obligations in the design.
 
 ## Milestone 2. IMAP encryption and OAuth renewal support are verified {#initial-server-2}
 
@@ -619,3 +624,63 @@ implementation checks; final Book checks and rendering were rerun.
 
 Completed the client JSON command and installed the tested release executable
 on 2026-11-18.
+
+
+## Milestone 10. Book tools use the pinned engine and evaluate its criteria {#initial-server-10}
+
+**Outcome:** Contributors can install the locked Anchor Book revision, retrieve its configured contract, check and render the Book through the native CLI, and obtain current criterion evidence without maintaining copied engine dispatch.
+
+**Status:** Complete
+
+**Identifier:** `initial-server-10`
+
+**Dependencies:** Existing Book and deterministic tests. Native Keychain and provider acceptance remain in milestone 1 and do not block tooling integration.
+
+**Design basis:** [Credential protection](../design/authentication.md#A-auth-keychain), [configuration isolation](../design/authentication.md#A-config-independent), and [project tool and upgrade guidance](../working-on-taxudromeio.md).
+
+**Tasks**
+
+- [x] Update the engine dependency and use its installed commands for configured contract retrieval, checking, rendering, and verification.
+- [x] Derive tool installation from Cargo.lock and document the upgrade procedure and versioned authoring references.
+- [x] Configure Mermaid and add an installed-tool regression test for the build gate and roadmap rendering.
+- [x] Configure nextest evidence, separate discovery protection, and associate its existing output checks and configuration-subset checks.
+- [x] Replace the native-login review method with an explicit executable obligation, leaving its missing evidence visible.
+- [x] Make public TLS fixture packaging and platform-specific imports usable for Linux and macOS validation.
+- [x] Validate the final change locally and through CI on both hosts.
+
+### Completion criteria
+
+#### Native Book tooling {#initial-server-10-tooling}
+
+Installed CLI revision and configured contract agree with the locked library.
+Actual Book builds render roadmap milestones and Mermaid, and fail for a missing
+required role or an unknown criterion in roadmap coverage. Repeating setup at
+the same pin preserves project sources.
+
+- **Anchor coverage:** None — consumer tooling, exercised by the installed-tool acceptance test.
+- **Evidence:** Passed locally on 2026-11-24, branch `book-assessment` based on `7cf0f7e` plus this change, using Rust 1.99.1 and Anchor Book `02945a9990de3481144edc8cd47808cdf231c135`. The installed-tool test matches CLI revision/contract to the locked library, renders all milestones and Mermaid, and rejects both a missing Design role and an unknown roadmap criterion. Repeating setup preserves project sources. Browser inspection covers light, navy, narrow, and print layouts with no script errors.
+
+#### Explicit criterion evidence {#initial-server-10-evidence}
+
+Configured verification runs the linked tests and exposes the missing native-login
+fixture. Configuration-file and discovery-output protection retain independent
+coverage, with CLI/MCP output fields asserted explicitly. Unknown selected IDs
+remain covered through the actual CLI.
+
+- **Anchor coverage:** `A-auth-keychain` · `no-file-secrets`, `discovery-redaction` — Full; `A-config-independent` · `same-server` — Full.
+- **Evidence:** Configured nextest verification passes locally with no findings: 12 anchors satisfied and one partial; 38 of 39 criteria satisfied. `native-login` remains unlinked and is deliberately outside this milestone's completion claim; its executable integration remains outstanding in milestone 1. Configuration persistence and both CLI/MCP discovery assertions are linked to their respective obligations. The existing unknown-subset CLI assertions now contribute to `same-server`.
+
+#### Reproducible checks {#initial-server-10-checks}
+
+Formatting, Clippy, ordinary tests, Book build, installed-tool acceptance, and
+configured verification pass on Linux and macOS using the same engine pin.
+Tests use synthetic credentials and loopback fixtures; no native Keychain or
+real-provider acceptance is inferred from these runs.
+
+- **Anchor coverage:** None — contributor setup and CI portability.
+- **Evidence:** Formatting, Clippy with warnings denied, 59 ordinary tests, installed-tool acceptance, Book build, and configured verification pass locally on Linux. OpenSSL development headers are a host prerequisite; no legacy provider override is needed after repackaging the existing public test identity. The preexisting imap-proto future-incompatibility warning remains. [Linux and macOS CI](https://github.com/kwdev/taxudromeio/actions/runs/45453005643) both passed for `88fb4c6431713264bb7fbf8bd3723868090c6e4c`, including the installed-tool gate regression. Both retained verification reports have the same 12 satisfied/one partial anchor and 38 satisfied/one unlinked criterion totals.
+
+### Completion record
+
+Complete for native Book tooling and deterministic verification. Native Keychain
+integration and real-provider acceptance remain outstanding in milestone 1.

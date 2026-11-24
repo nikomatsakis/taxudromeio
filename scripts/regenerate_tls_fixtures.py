@@ -34,8 +34,10 @@ def main():
                 "-out", "server.pem", "-days", "365", "-extfile", "extensions",
             ],
             [
-                "openssl", "pkcs12", "-export", "-legacy", "-inkey", "server.key",
+                "openssl", "pkcs12", "-export", "-inkey", "server.key",
                 "-in", "server.pem", "-certfile", "ca.pem", "-out", "server.p12",
+                "-keypbe", "PBE-SHA1-3DES", "-certpbe", "PBE-SHA1-3DES",
+                "-macalg", "sha1",
                 "-passout", "pass:fixture",
             ],
         ]

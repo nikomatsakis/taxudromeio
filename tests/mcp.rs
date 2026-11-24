@@ -40,6 +40,7 @@ fn account(id: &str, profile: Profile) -> Account {
 
 /// anchorbook: A-policy-triage#direct-call-enforcement
 /// anchorbook: A-config-independent#same-server
+/// anchorbook: A-auth-keychain#discovery-redaction
 #[tokio::test]
 async fn real_mcp_handshake_lists_tools_and_enforces_each_configuration() {
     let backend = Arc::new(FixtureBackend(AtomicUsize::new(0)));
@@ -72,11 +73,18 @@ async fn real_mcp_handshake_lists_tools_and_enforces_each_configuration() {
         .await
         .unwrap();
     assert_eq!(
-        result.structured_content.as_ref().unwrap()["configurations"]
-            .as_array()
-            .unwrap()
-            .len(),
-        2
+        result.structured_content.as_ref().unwrap(),
+        &json!({"configurations": [
+            {"id": "triage", "host": "imap.example.com", "port": 993, "transport": "tls",
+             "root": "Projects", "drafts_folder": "Drafts",
+             "operations": ["mail_list_folders", "mail_folder_status", "mail_list_messages",
+                 "mail_search", "mail_read_message", "mail_move_messages", "mail_copy_messages",
+                 "mail_set_flags", "mail_save_draft"]},
+            {"id": "archive", "host": "imap.example.com", "port": 993, "transport": "tls",
+             "root": "Projects", "drafts_folder": "Drafts",
+             "operations": ["mail_list_folders", "mail_folder_status", "mail_list_messages",
+                 "mail_search", "mail_read_message"]}
+        ]})
     );
     assert_eq!(backend.0.load(Ordering::SeqCst), 0);
     let mut args = json!({

@@ -3,15 +3,15 @@
 The CLI and server connect local callers to explicitly configured IMAP roots.
 
 ```mermaid
-flowchart LR
+flowchart TD
     Client["MCP client"] --> Server["Rust stdio server"]
     CLI["Clap CLI"] --> Service["Shared mail service"]
     Server --> Service
-    Config["Nonsecret TOML configurations"] --> Service
+    Config["Nonsecret TOML<br/>configurations"] --> Service
     Service --> Policy["Per-configuration policy"]
-    Policy --> Scope["Root and UIDVALIDITY checks"]
+    Policy --> Scope["Root and UIDVALIDITY<br/>checks"]
     Scope --> IMAP["IMAP over verified TLS"]
-    Keychain["macOS Keychain: login and credential"] --> IMAP
+    Keychain["macOS Keychain:<br/>login and credential"] --> IMAP
 ```
 
 [Access and operations](access.md) owns the `policy`, `folder`, and `message`

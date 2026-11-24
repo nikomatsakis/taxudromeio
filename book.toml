@@ -9,6 +9,13 @@ build-dir = "target/anchorbook"
 create-missing = false
 
 [preprocessor.anchorbook]
-command = "cargo run --quiet --locked --example anchorbook -- md"
+command = "target/book-tools/bin/anchorbook md"
 config = "anchorbook.toml"
 after = ["links"]
+
+[preprocessor.mermaid]
+command = "target/book-tools/bin/mdbook-mermaid"
+after = ["anchorbook"]
+
+[output.html]
+additional-js = ["mermaid.min.js", "mermaid-init.js"]

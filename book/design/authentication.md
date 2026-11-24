@@ -5,9 +5,10 @@ The configuration ID is the unit of identity, policy, scope, and credential stor
 > **`A-auth-keychain`** (draft): **Login information remains in macOS Keychain**
 > Property: The authentication command verifies new logins and roots before storing the login name and credential together in a Keychain item named by configuration ID. Renewal of an existing OAuth grant is preserved before verification to avoid losing rotated tokens. The TOML file and CLI/MCP discovery contain no login or credential; configuration-save failure attempts to restore the prior credential, including any renewal.
 > Authority: `R-keychain-login`; `R-auth-command`
-> - Criterion `no-file-secrets` [test]: TOML deserialization rejects username and password fields, and discovery and configuration-list outputs contain only nonsecret account settings.
+> - Criterion `no-file-secrets` [test]: TOML deserialization rejects username and password fields, and saving configurations keeps login names and credentials out of the file.
+> - Criterion `discovery-redaction` [test]: CLI configuration listing and MCP discovery return only the declared nonsecret configuration fields, with no login name, password, or OAuth credential and no credential-store access.
 > - Criterion `save-failure` [test]: A fake store observes restoration of prior credentials or removal of a new record after a configuration write failure.
-> - Criterion `native-login` [review]: A macOS operator runs auth against a real provider, verifies a native Keychain item contains the login and credential, and confirms authentication saves no secrets to the TOML file.
+> - Criterion `native-login` [test]: An executable macOS integration fixture verifies a login through the production authentication path, asserts that the native Keychain item contains the expected synthetic login and credential and TOML contains neither, and removes its isolated test item. Missing native execution leaves this criterion unverified; operator/provider acceptance is recorded separately in the roadmap.
 
 > **`A-config-independent`** (draft): **The same server can back separate configurations**
 > Property: Distinct configuration IDs can reuse a host, port and login while choosing independent roots, policies and Keychain items. Duplicate IDs are rejected; clients can expose an explicitly selected subset.

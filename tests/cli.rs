@@ -126,6 +126,8 @@ fn mobileconfig_account_selection_requires_a_profile_path() {
     );
 }
 
+/// anchorbook: A-auth-keychain#discovery-redaction
+/// anchorbook: A-config-independent#same-server
 #[test]
 fn configuration_listing_does_not_need_keychain_and_missing_ids_fail() {
     let dir = tempfile::tempdir().unwrap();
@@ -143,7 +145,16 @@ fn configuration_listing_does_not_need_keychain_and_missing_ids_fail() {
         .unwrap();
     assert!(output.status.success());
     let value: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
-    assert_eq!(value["configurations"][0]["id"], "work");
+    assert_eq!(
+        value,
+        serde_json::json!({"configurations": [{
+            "id": "work", "host": "imap.example.com", "port": 993, "transport": "tls",
+            "root": "Projects", "drafts_folder": null,
+            "operations": ["mail_list_folders", "mail_folder_status", "mail_list_messages",
+                "mail_search", "mail_read_message", "mail_move_messages", "mail_copy_messages",
+                "mail_set_flags", "mail_save_draft"]
+        }]})
+    );
     assert_eq!(value["configurations"][0]["root"], "Projects");
     assert!(
         value["configurations"][0]["operations"]

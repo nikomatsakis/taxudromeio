@@ -30,7 +30,7 @@ zeroize = { version = "1", features = ["derive"] }
 security-framework = "3"
 
 [dev-dependencies]
-anchor-book = { git = "https://github.com/anchor-book/anchor-book", rev = "9689b00416fd577bfb68a02f1fa310f6088404cf" }
+anchor-book = { git = "https://github.com/anchor-book/anchor-book", rev = "02945a9990de3481144edc8cd47808cdf231c135" }
 tempfile = "3"
 shlex = "2"
 rmcp = { version = "1.8", features = ["client"] }

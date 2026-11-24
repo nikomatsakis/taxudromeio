@@ -1,9 +1,15 @@
-use anyhow::{Context, Result};
+#[cfg(target_os = "macos")]
+use anyhow::Context;
+use anyhow::Result;
 use serde::{Deserialize, Serialize};
-use zeroize::{Zeroize, ZeroizeOnDrop, Zeroizing};
+#[cfg(target_os = "macos")]
+use zeroize::Zeroizing;
+use zeroize::{Zeroize, ZeroizeOnDrop};
 
+#[cfg(target_os = "macos")]
 use crate::config::validate_id;
 
+#[cfg(target_os = "macos")]
 const SERVICE: &str = "io.taxudromeio.mcp.imap";
 
 #[derive(Clone, Deserialize, Serialize, Zeroize, ZeroizeOnDrop)]

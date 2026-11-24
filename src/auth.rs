@@ -478,6 +478,7 @@ mod tests {
     }
 
     /// anchorbook: A-auth-profile-import#local-boundaries
+    /// anchorbook: A-auth-keychain#no-file-secrets
     #[test]
     fn imported_login_and_password_are_saved_only_to_the_credential_store() {
         let mut imported = profile::select(

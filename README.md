@@ -372,12 +372,18 @@ in Cargo.toml and Cargo.lock, as a development dependency. See
 maintenance and verification limits. The installed executable has no runtime
 Anchor Book dependency.
 
+Install the pinned Book tools with `scripts/setup-book-tools.sh`, then add them to
+the current shell before running development checks:
+
 ```sh
+export PATH="$PWD/target/book-tools/bin:$PATH"
 cargo fmt --check
 cargo clippy --locked --all-targets -- -D warnings
 cargo test --locked --all-targets
-cargo run --quiet --locked --example anchorbook -- check
+anchorbook check --config anchorbook.toml
 mdbook build
+cargo test --locked --test book -- --ignored
+anchorbook verify --config anchorbook.toml
 ```
 
 Ordinary tests use fake credential stores and deterministic protocol fixtures;

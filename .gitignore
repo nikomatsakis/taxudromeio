@@ -1,2 +1,4 @@
 /target
 *.mobileconfig
+/mermaid.min.js
+/mermaid-init.js

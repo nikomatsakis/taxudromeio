@@ -14,7 +14,7 @@ dependencies = [
 [[package]]
 name = "anchor-book"
 version = "0.1.0"
-source = "git+https://github.com/anchor-book/anchor-book?rev=9689b00416fd577bfb68a02f1fa310f6088404cf#9689b00416fd577bfb68a02f1fa310f6088404cf"
+source = "git+https://github.com/anchor-book/anchor-book?rev=02945a9990de3481144edc8cd47808cdf231c135#02945a9990de3481144edc8cd47808cdf231c135"
 dependencies = [
  "mdbook-core",
  "mdbook-summary",
